@@ -1,0 +1,23 @@
+# Visual Studio temp
+.vs/
+.vscode/
+
+# User-specific files
+*.suo
+*.user
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# Well known files
+*.ilk
+*.obj
+*.pch
+*.pdb
+*.tmp
+*.log
