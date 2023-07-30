@@ -31,6 +31,9 @@ namespace HyperVector.Random
 
 			ulong currentValue = 2654435687UL * 2654435711UL;
 			Debug.Assert(BinaryHelper.GetNumberOfOnes(currentValue) == 32);
+
+			int shiftBits = (int) initialSeed & 0x0000003f;
+			currentValue = BinaryHelper.RotateRight(currentValue, shiftBits);
 			currentValue ^= initialSeed;
 
 			for (int i = 0; i < _arraySize; i++)
