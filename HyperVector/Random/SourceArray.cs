@@ -10,6 +10,7 @@ namespace HyperVector.Random
 	{
 		private const int _arraySize = 37;
 
+		private int _currentIndex = 0;
 		private ulong[] _sourceArray = new ulong[_arraySize];
 
 		private static SourceArray _staticInstance = null;
@@ -41,6 +42,22 @@ namespace HyperVector.Random
 				_sourceArray[i] = currentValue;
 				currentValue ^= BinaryHelper.RotateRight(currentValue, 23);
 			}
+		}
+
+		public ulong NextUlong()
+		{
+			ulong currentValue = _sourceArray[_currentIndex];
+
+			int nextIndex = _currentIndex + 1;
+			if (nextIndex > _arraySize - 1)
+				nextIndex = 0;
+
+			ulong shaffleValue = _sourceArray[nextIndex];
+			 shaffleValue = BinaryHelper.RotateRight(shaffleValue);
+			_sourceArray[_currentIndex] ^= shaffleValue;
+
+			_currentIndex = nextIndex;
+			return currentValue;
 		}
 	}
 }
