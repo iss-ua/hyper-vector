@@ -33,7 +33,7 @@ namespace HyperVector.Random
 			ulong currentValue = 2654435687UL * 2654435711UL;
 			Debug.Assert(BinaryHelper.GetNumberOfOnes(currentValue) == 32);
 
-			int shiftBits = (int) initialSeed & 0x0000003f;
+			int shiftBits = (int) initialSeed & 0x000000000000003f;
 			currentValue = BinaryHelper.RotateRight(currentValue, shiftBits);
 			currentValue ^= initialSeed;
 
@@ -42,6 +42,21 @@ namespace HyperVector.Random
 				_sourceArray[i] = currentValue;
 				currentValue ^= BinaryHelper.RotateRight(currentValue, 23);
 			}
+		}
+
+		public byte NextByte()
+		{
+			return (byte) (NextUlong() & 0xFF);
+		}
+
+		public ushort NextUshort()
+		{
+			return (ushort) (NextUlong() & 0xFFFF);
+		}
+
+		public uint NextUint()
+		{
+			return (uint) (NextUlong() & 0xFFFFFFFF);
 		}
 
 		public ulong NextUlong()
@@ -58,6 +73,24 @@ namespace HyperVector.Random
 
 			_currentIndex = nextIndex;
 			return currentValue;
+		}
+
+		/// <returns>Random floating-point number in the range [1, 2)</returns>
+		public unsafe float NextFloat12()
+		{
+			uint floatPattern = NextUint();
+			floatPattern |= 0b0_01111111_00000000000000000000000;
+			floatPattern &= 0b0_01111111_11111111111111111111111;
+			return *((float*) &floatPattern);
+		}
+
+		/// <returns>Random floating-point number in the range [1, 2)</returns>
+		public unsafe double NextDouble12()
+		{
+			ulong doublePattern = NextUlong();
+			doublePattern |= 0b0_01111111111_0000000000000000000000000000000000000000000000000000;
+			doublePattern &= 0b0_01111111111_1111111111111111111111111111111111111111111111111111;
+			return *((double*) &doublePattern);
 		}
 	}
 }

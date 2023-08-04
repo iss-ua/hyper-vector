@@ -31,5 +31,23 @@ namespace HyperVector.Random.Tests
 			Assert.NotEqual(randomValue2, randomValue3);
 			Assert.NotEqual(randomValue3, randomValue1);
 		}
+
+		[Fact]
+		public void FloatingPointNumbers()
+		{
+			var sourceArray = SourceArray.StaticInstance;
+			Assert.NotNull(sourceArray);
+
+			for (int i = 0; i < 10; i++)
+			{
+				float randomFloat = sourceArray.NextFloat12();
+				Assert.True(randomFloat >= 1.0f);
+				Assert.True(randomFloat < 2.0f);
+
+				double randomDouble = sourceArray.NextDouble12();
+				Assert.True(randomDouble >= 1.0);
+				Assert.True(randomDouble < 2.0);
+			}
+		}
 	}
 }
