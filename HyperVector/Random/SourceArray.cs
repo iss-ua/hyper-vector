@@ -31,7 +31,7 @@ namespace HyperVector.Random
 			get
 			{
 				if (_staticInstance == null)
-					_staticInstance = new SourceArray();
+					_staticInstance = new SourceArray(GetRandomSeed());
 				return _staticInstance;
 			}
 		}
@@ -53,6 +53,23 @@ namespace HyperVector.Random
 				_sourceArray[i] = currentValue;
 				currentValue ^= BinaryHelper.RotateRight(currentValue, 23);
 			}
+		}
+
+		public static unsafe ulong GetRandomSeed()
+		{
+			string machineName = Environment.MachineName;
+			int machineHash = machineName.GetHashCode();
+			machineHash ^= Environment.CurrentManagedThreadId;
+
+			ulong seedValue = *((uint*) &machineHash);
+			seedValue = BinaryHelper.RotateLeft(seedValue, 32);
+
+			int ticksElapsed = Environment.TickCount;
+			seedValue ^= *((uint*) &ticksElapsed);
+
+			DateTime utcNow = DateTime.UtcNow;
+			seedValue ^= *((ulong*) &utcNow);
+			return seedValue;
 		}
 
 		/// <returns>Random boolean value with uniform distribution</returns>

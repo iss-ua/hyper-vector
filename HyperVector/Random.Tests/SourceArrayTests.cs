@@ -27,9 +27,10 @@ namespace HyperVector.Random.Tests
 		}
 
 		[Fact]
-		public void CheckInitialSeed()
+		public void CheckRandomSeed()
 		{
-			var sourceArray = new SourceArray(1);
+			ulong randomSeed = SourceArray.GetRandomSeed();
+			var sourceArray = new SourceArray(randomSeed);
 			Assert.NotNull(sourceArray);
 
 			ulong randomValue1 = sourceArray.NextUlong();
