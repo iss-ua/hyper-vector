@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Diagnostics;
 
 namespace HyperVector.Random
@@ -153,18 +154,18 @@ namespace HyperVector.Random
 		/// representation. The parameter zeroDelta can be in range [0.1, 0.5]
 		/// </summary>
 		/// <returns>Random floating-point number in the range (-1, 1) excluding [-ε, ε]</returns>
-		public half NextVectorHalf(/* half */ float zeroDelta = 0.1f)
+		public half NextVectorHalf(half zeroDelta /* = 0.1 */)
 		{
-			if (zeroDelta < 0.1f || zeroDelta > 0.5f)
+			if (zeroDelta < (half) 0.1f || zeroDelta > (half) 0.5f)
 			{
 				throw new ArgumentOutOfRangeException
 					(nameof(zeroDelta), "Should be in range [0.1, 0.5]");
 			}
 
 			half unitHalf = NextUnitHalf();
-			if (unitHalf > (half) zeroDelta)
+			if (unitHalf > zeroDelta)
 				return unitHalf;
-			if (unitHalf < (half) (-zeroDelta))
+			if (unitHalf < -zeroDelta)
 				return unitHalf;
 			return NextVectorHalf(zeroDelta);
 		}
@@ -265,6 +266,18 @@ namespace HyperVector.Random
 			if (unitDouble < -zeroDelta)
 				return unitDouble;
 			return NextVectorDouble(zeroDelta);
+		}
+
+		/// <summary>
+		/// The generic version of method to generate random vector component
+		/// that uses parameter overloading as implementation approach.
+		/// </summary>
+		/// <typeparam name="T">Either half, float or double</typeparam>
+		/// <param name="zeroDelta">Should be in range [0.1, 0.5]</param>
+		/// <returns></returns>
+		public T NextVectorValue<T>(T zeroDelta) where T : IFloatingPoint<T>
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

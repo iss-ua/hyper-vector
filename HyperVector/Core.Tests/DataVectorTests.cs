@@ -7,11 +7,19 @@ namespace HyperVector.Core.Tests
 	public class DataVectorTests
 	{
 		[Fact]
-		public void InstantiationTests()
+		public void VectorCreationTests()
 		{
 			var halfVector = new DataVector<half>(4096);
 			var floatVector = new DataVector<float>(4096);
 			var doubleVector = new DataVector<double>(4096);
+		}
+
+		[Fact]
+		public void VectorGenerationTests()
+		{
+			// var halfVector = DataVector<half>.GenerateBaseVector(4, (half) 0.1f);
+			// var floatVector = DataVector<float>.GenerateBaseVector(4, 0.1f);
+			// var doubleVector = DataVector<double>.GenerateBaseVector(4, 0.1);
 		}
 	}
 }
