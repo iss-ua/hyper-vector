@@ -4,6 +4,10 @@ using System.Diagnostics.Contracts;
 
 namespace HyperVector.Random
 {
+#pragma warning disable CS8981
+	using half = System.Half;
+#pragma warning restore
+
 	/// <summary>
 	/// This class can be used to generate integer and floating point
 	/// random numbers. It can be instantiated or can be used as static
