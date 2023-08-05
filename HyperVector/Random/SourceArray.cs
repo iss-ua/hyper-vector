@@ -22,7 +22,7 @@ namespace HyperVector.Random
 		private const int _arraySize = 37;
 
 		private int _currentIndex = 0;
-		private ulong[] _sourceArray = new ulong[_arraySize];
+		private ulong[] _sourceArray = new ulong[_arraySize]; // TODO: Consider stackalloc
 
 		private static SourceArray _staticInstance = null;
 
