@@ -17,9 +17,9 @@ namespace HyperVector.Core.Tests
 		[Fact]
 		public void VectorGenerationTests()
 		{
-			// var halfVector = DataVector<half>.GenerateBaseVector(4, (half) 0.1f);
-			// var floatVector = DataVector<float>.GenerateBaseVector(4, 0.1f);
-			// var doubleVector = DataVector<double>.GenerateBaseVector(4, 0.1);
+			var halfVector = DataVector<half>.GenerateBaseVector(4096, (half) 0.1f);
+			var floatVector = DataVector<float>.GenerateBaseVector(4096, 0.1f);
+			var doubleVector = DataVector<double>.GenerateBaseVector(4096, 0.1);
 		}
 	}
 }

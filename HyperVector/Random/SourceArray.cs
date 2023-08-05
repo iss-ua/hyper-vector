@@ -267,17 +267,5 @@ namespace HyperVector.Random
 				return unitDouble;
 			return NextVectorDouble(zeroDelta);
 		}
-
-		/// <summary>
-		/// The generic version of method to generate random vector component
-		/// that uses parameter overloading as implementation approach.
-		/// </summary>
-		/// <typeparam name="T">Either half, float or double</typeparam>
-		/// <param name="zeroDelta">Should be in range [0.1, 0.5]</param>
-		/// <returns></returns>
-		public T NextVectorValue<T>(T zeroDelta) where T : IFloatingPoint<T>
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

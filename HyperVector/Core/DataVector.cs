@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Numerics;
 
-using HyperVector.Random;
-
 namespace HyperVector.Core
 {
+#pragma warning disable CS8981
+	using half = System.Half;
+#pragma warning restore
+
 	public class DataVector<T> where T : IFloatingPoint<T>
 	{
-		private static SourceArray _sourceArray = SourceArray.StaticInstance;
-
-		private int _vectorSize;
-		private T[] _presentation;
+		internal int _vectorSize;
+		internal T[] _presentation;
 
 		public int VectorSize => _vectorSize;
 
@@ -22,16 +22,19 @@ namespace HyperVector.Core
 			_presentation = new T[vectorSize];
 		}
 
+		/// <summary>
+		/// The generic version of method to generate random base vector.
+		/// </summary>
+		/// <typeparam name="T">Either half, float or double</typeparam>
+		/// <param name="zeroDelta">Should be in range [0.1, 0.5]</param>
+		/// <returns>The base representation vector.</returns>
 		public static DataVector<T> GenerateBaseVector(int vectorSize, T zeroDelta)
 		{
-			var baseVector = new DataVector<T>(vectorSize);
+			var typeResolver = TypeResolver.StaticInstance as ITypeResolver<T>;
+			if (typeResolver != null)
+				return typeResolver.GenerateBaseVector(vectorSize, zeroDelta);
 
-			for (int i = 0; i < vectorSize; i++)
-			{
-				T randomValue = _sourceArray.NextVectorValue<T>(zeroDelta);
-				baseVector._presentation[i] = randomValue;
-			}
-			return baseVector;
+			throw new NotImplementedException();
 		}
 	}
 }
