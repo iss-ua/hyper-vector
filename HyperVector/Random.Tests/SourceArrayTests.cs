@@ -1,7 +1,16 @@
+using Xunit.Abstractions;
+
 namespace HyperVector.Random.Tests
 {
 	public class SourceArrayTests
 	{
+		private readonly ITestOutputHelper _outputHelper;
+
+		public SourceArrayTests(ITestOutputHelper outputHelper)
+		{
+			_outputHelper = outputHelper;
+		}
+
 		[Fact]
 		public void CheckStaticInstance()
 		{
@@ -33,21 +42,89 @@ namespace HyperVector.Random.Tests
 		}
 
 		[Fact]
+		public void CheckBooleanValues()
+		{
+			int trueCounter = 0, falseCounter = 0;
+			var sourceArray = new SourceArray(1);
+			Assert.NotNull(sourceArray);
+
+			for (int i = 0; i < 100; i++)
+			{
+				bool randomBool = sourceArray.NextBool();
+				if (randomBool)
+					trueCounter++;
+				else
+					falseCounter++;
+			}
+
+			_outputHelper.WriteLine($"True boolean counter: {trueCounter}");
+			_outputHelper.WriteLine($"False boolean counter: {falseCounter}");
+		}
+
+		[Fact]
 		public void FloatingPointNumbers()
 		{
+			float randomFloat; double randomDouble;
 			var sourceArray = SourceArray.StaticInstance;
 			Assert.NotNull(sourceArray);
 
 			for (int i = 0; i < 10; i++)
 			{
-				float randomFloat = sourceArray.NextFloat12();
+				randomFloat = sourceArray.NextFloat12();
 				Assert.True(randomFloat >= 1.0f);
 				Assert.True(randomFloat < 2.0f);
 
-				double randomDouble = sourceArray.NextDouble12();
+				randomFloat = sourceArray.NextFloat01();
+				Assert.True(randomFloat >= 0.0f);
+				Assert.True(randomFloat < 1.0f);
+			}
+
+			for (int i = 0; i < 10; i++)
+			{
+				randomDouble = sourceArray.NextDouble12();
 				Assert.True(randomDouble >= 1.0);
 				Assert.True(randomDouble < 2.0);
+
+				randomDouble = sourceArray.NextDouble01();
+				Assert.True(randomDouble >= 0.0);
+				Assert.True(randomDouble < 1.0);
 			}
+
+			_outputHelper.WriteLine("Completed testing uniform numbers");
+		}
+
+		[Fact]
+		public void HyperVectorNumbers()
+		{
+			float randomFloat; double randomDouble;
+			var sourceArray = SourceArray.StaticInstance;
+			Assert.NotNull(sourceArray);
+
+			for (int i = 0; i < 10; i++)
+			{
+				randomFloat = sourceArray.NextUnitFloat();
+				Assert.True(randomFloat < 1.0f);
+				Assert.True(randomFloat > -1.0f);
+
+				randomFloat = sourceArray.NextVectorFloat();
+				Assert.True(randomFloat < 1.0f);
+				Assert.True(randomFloat > -1.0f);
+				Assert.True(randomFloat > 0.1f || randomFloat < -0.1f);
+			}
+
+			for (int i = 0; i < 10; i++)
+			{
+				randomDouble = sourceArray.NextUnitDouble();
+				Assert.True(randomDouble < 1.0);
+				Assert.True(randomDouble > -1.0);
+
+				randomDouble = sourceArray.NextVectorDouble();
+				Assert.True(randomDouble < 1.0);
+				Assert.True(randomDouble > -1.0);
+				Assert.True(randomDouble > 0.1 || randomDouble < -0.1);
+			}
+
+			_outputHelper.WriteLine("Completed testing hyper-vector numbers");
 		}
 	}
 }
