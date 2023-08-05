@@ -2,6 +2,10 @@ using System;
 
 namespace HyperVector.Random
 {
+	/// <summary>
+	/// This static class can be used for counting of ones in
+	/// binary representations and for basic rotation operations
+	/// </summary>
 	public static class BinaryHelper
 	{
 		private static int[] _onesInByte = new int[256];

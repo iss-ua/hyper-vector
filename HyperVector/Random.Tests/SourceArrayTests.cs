@@ -46,7 +46,8 @@ namespace HyperVector.Random.Tests
 		public void CheckBooleanValues()
 		{
 			int trueCounter = 0, falseCounter = 0;
-			var sourceArray = new SourceArray(1);
+			ulong randomSeed = SourceArray.GetRandomSeed();
+			var sourceArray = new SourceArray(randomSeed);
 			Assert.NotNull(sourceArray);
 
 			for (int i = 0; i < 100; i++)
