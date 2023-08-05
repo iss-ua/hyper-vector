@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 
 namespace HyperVector.Random
 {
@@ -15,6 +14,10 @@ namespace HyperVector.Random
 	/// </summary>
 	public class SourceArray
 	{
+		private const ushort _halfOrMask = 0b0_01111_0000000000;
+		private const ushort _halfAndMask = 0b0_01111_1111111111;
+		private const ushort _halfSignMask = 0b1_00000_0000000000;
+
 		private const uint _floatOrMask = 0b0_01111111_00000000000000000000000;
 		private const uint _floatAndMask = 0b0_01111111_11111111111111111111111;
 		private const uint _floatSignMask = 0b1_00000000_00000000000000000000000;
@@ -26,7 +29,7 @@ namespace HyperVector.Random
 		private const int _arraySize = 37;
 
 		private int _currentIndex = 0;
-		private ulong[] _sourceArray = new ulong[_arraySize]; // TODO: Consider stackalloc
+		private ulong[] _sourceArray = new ulong[_arraySize];
 
 		private static SourceArray _staticInstance = null;
 
@@ -118,6 +121,55 @@ namespace HyperVector.Random
 		}
 
 		/// <returns>Random floating-point number in the range [0, 1)</returns>
+		public half NextHalf01()
+		{
+			return NextHalf12() - (half) 1.0;
+		}
+
+		/// <returns>Random floating-point number in the range [1, 2)</returns>
+		public unsafe half NextHalf12()
+		{
+			ushort halfPattern = NextUshort();
+			halfPattern |= _halfOrMask;
+			halfPattern &= _halfAndMask;
+			return *((half*) &halfPattern);
+		}
+
+		/// <returns>Random floating-point number in the range (-1, 1)</returns>
+		public unsafe half NextUnitHalf()
+		{
+			ushort halfPattern = NextUshort();
+			halfPattern |= _halfOrMask;
+			halfPattern &= (_halfAndMask | _halfSignMask);
+
+			if ((halfPattern & _halfSignMask) > 0)
+				return *((half*) &halfPattern) + (half) 1.0; // Negative value
+			else
+				return *((half*) &halfPattern) - (half) 1.0; // Positive value
+		}
+
+		/// <summary>
+		/// The method returns floating point random number for the use in hyper-vector
+		/// representation. The parameter zeroDelta can be in range [0.1, 0.5]
+		/// </summary>
+		/// <returns>Random floating-point number in the range (-1, 1) excluding [-ε, ε]</returns>
+		public half NextVectorHalf(/* half */ float zeroDelta = 0.1f)
+		{
+			if (zeroDelta < 0.1f || zeroDelta > 0.5f)
+			{
+				throw new ArgumentOutOfRangeException
+					(nameof(zeroDelta), "Should be in range [0.1, 0.5]");
+			}
+
+			half unitHalf = NextUnitHalf();
+			if (unitHalf > (half) zeroDelta)
+				return unitHalf;
+			if (unitHalf < (half) (-zeroDelta))
+				return unitHalf;
+			return NextVectorHalf(zeroDelta);
+		}
+
+		/// <returns>Random floating-point number in the range [0, 1)</returns>
 		public float NextFloat01()
 		{
 			return NextFloat12() - 1.0f;
@@ -147,19 +199,23 @@ namespace HyperVector.Random
 
 		/// <summary>
 		/// The method returns floating point random number for the use in hyper-vector
-		/// representation. The parameter epsilonValue can be in range [0.1, 0.5]
+		/// representation. The parameter zeroDelta can be in range [0.1, 0.5]
 		/// </summary>
 		/// <returns>Random floating-point number in the range (-1, 1) excluding [-ε, ε]</returns>
-		public float NextVectorFloat(float epsilonValue = 0.1f)
+		public float NextVectorFloat(float zeroDelta = 0.1f)
 		{
-			Contract.Requires(epsilonValue >= 0.1f && epsilonValue <= 0.5f);
+			if (zeroDelta < 0.1f || zeroDelta > 0.5f)
+			{
+				throw new ArgumentOutOfRangeException
+					(nameof(zeroDelta), "Should be in range [0.1, 0.5]");
+			}
 
 			float unitFloat = NextUnitFloat();
-			if (unitFloat > epsilonValue)
+			if (unitFloat > zeroDelta)
 				return unitFloat;
-			if (unitFloat < -epsilonValue)
+			if (unitFloat < -zeroDelta)
 				return unitFloat;
-			return NextVectorFloat(epsilonValue);
+			return NextVectorFloat(zeroDelta);
 		}
 
 		/// <returns>Random floating-point number in the range [0, 1)</returns>
@@ -192,19 +248,23 @@ namespace HyperVector.Random
 
 		/// <summary>
 		/// The method returns floating point random number for the use in hyper-vector
-		/// representation. The parameter epsilonValue can be in range [0.1, 0.5]
+		/// representation. The parameter zeroDelta can be in range [0.1, 0.5]
 		/// </summary>
 		/// <returns>Random floating-point number in the range (-1, 1) excluding [-ε, ε]</returns>
-		public double NextVectorDouble(double epsilonValue = 0.1)
+		public double NextVectorDouble(double zeroDelta = 0.1)
 		{
-			Contract.Requires(epsilonValue >= 0.1 && epsilonValue <= 0.5);
+			if (zeroDelta < 0.1 || zeroDelta > 0.5)
+			{
+				throw new ArgumentOutOfRangeException
+					(nameof(zeroDelta), "Should be in range [0.1, 0.5]");
+			}
 
 			double unitDouble = NextUnitDouble();
-			if (unitDouble > epsilonValue)
+			if (unitDouble > zeroDelta)
 				return unitDouble;
-			if (unitDouble < -epsilonValue)
+			if (unitDouble < -zeroDelta)
 				return unitDouble;
-			return NextVectorDouble(epsilonValue);
+			return NextVectorDouble(zeroDelta);
 		}
 	}
 }
