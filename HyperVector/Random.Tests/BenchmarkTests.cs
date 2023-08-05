@@ -16,7 +16,6 @@ namespace HyperVector.Random.Tests
 
 		private SourceArray _sourceArray;
 		private System.Random _systemRandom;
-		private RandomNumberGenerator _cryptoRandom;
 
 		// The BenchmarkDotNet framework does not provide an injection
 		public BenchmarkTests(ITestOutputHelper? outputHelper = null)
@@ -29,7 +28,7 @@ namespace HyperVector.Random.Tests
 		}
 
 		[Fact (Skip = "This method is time consuming")]
-		public void StartBenchmarks()
+		public void StartBenchmarkTests()
 		{
 			var accumulationlogger = new AccumulationLogger();
 			var manualConfig = ManualConfig.Create(DefaultConfig.Instance)
@@ -49,7 +48,10 @@ namespace HyperVector.Random.Tests
 				randomValue ^= _sourceArray.NextUlong();
 
 			if (_outputHelper != null)
-				_outputHelper.WriteLine($"Final SourceArray number:\n=====> {randomValue}");
+			{
+				_outputHelper.WriteLine
+					($"Final SourceArray number:\n=====> {randomValue}");
+			}
 		}
 
 		[Fact, Benchmark]
@@ -60,7 +62,10 @@ namespace HyperVector.Random.Tests
 				randomValue ^= _systemRandom.NextInt64();
 
 			if (_outputHelper != null)
-				_outputHelper.WriteLine($"Final SystemRandom number:\n=====> {randomValue}");
+			{
+				_outputHelper.WriteLine
+					($"Final SystemRandom number:\n=====> {randomValue}");
+			}
 		}
 
 		[Fact, Benchmark]
@@ -75,7 +80,10 @@ namespace HyperVector.Random.Tests
 			}
 
 			if (_outputHelper != null)
-				_outputHelper.WriteLine($"Final CryptoRandom number:\n=====> {randomValue}");
+			{
+				_outputHelper.WriteLine
+					($"Final CryptoRandom number:\n=====> {randomValue}");
+			}
 		}
 	}
 }
