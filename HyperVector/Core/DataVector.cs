@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Numerics;
+using System.Diagnostics;
 using System.Collections.Generic;
 
 namespace HyperVector.Core
@@ -15,7 +16,14 @@ namespace HyperVector.Core
 		internal int _vectorSize;
 		internal T[] _presentation;
 
-		public int Size => _vectorSize;
+		public int Size
+		{
+			get
+			{
+				Debug.Assert(_presentation.GetLength(0) == _vectorSize);
+				return _vectorSize;
+			}
+		}
 
 		public T this[int index] => _presentation[index];
 
@@ -29,6 +37,30 @@ namespace HyperVector.Core
 
 			_vectorSize = vectorSize;
 			_presentation = new T[vectorSize];
+		}
+
+		public bool Equals(DataVector<T> rightVector)
+		{
+			if (_vectorSize != rightVector.Size)
+			{
+				throw new ArgumentException
+					("The vector sizes for left and right operands should match");
+			}
+
+			for (int i = 0; i < _vectorSize; i++)
+			{
+				if (_presentation[i] != rightVector[i])
+					return false;
+			}
+			return true;
+		}
+
+		public DataVector<T> Copy()
+		{
+			var copyVector = new DataVector<T>(_vectorSize);
+			for (int i = 0; i < _vectorSize; i++)
+				copyVector._presentation[i] = _presentation[i];
+			return copyVector;
 		}
 
 		/// <summary>

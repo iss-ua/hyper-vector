@@ -36,7 +36,7 @@ namespace HyperVector.Random.Tests
 		}
 
 		[Fact]
-		public void CheckUlintRotation()
+		public void CheckUintRotation()
 		{
 			uint currentValue = 0x01234567U, rotatedValue = 0;
 
