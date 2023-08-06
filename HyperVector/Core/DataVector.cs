@@ -63,6 +63,19 @@ namespace HyperVector.Core
 			return copyVector;
 		}
 
+		public DataVector<T> CopyFrom(DataVector<T> sourceVector)
+		{
+			if (_vectorSize != sourceVector.Size)
+			{
+				throw new ArgumentException
+					("The vector sizes for source and target operands should match");
+			}
+
+			for (int i = 0; i < _vectorSize; i++)
+				_presentation[i] = sourceVector[i];
+			return this;
+		}
+
 		/// <summary>
 		/// The generic version of method to generate random base vector.
 		/// </summary>
