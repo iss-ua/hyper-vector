@@ -21,6 +21,12 @@ namespace HyperVector.Core
 
 		public DataVector(int vectorSize)
 		{
+			if (vectorSize < 1)
+			{
+				throw new ArgumentException
+					("The data vector size cannot be less than 1");
+			}
+
 			_vectorSize = vectorSize;
 			_presentation = new T[vectorSize];
 		}
@@ -84,6 +90,19 @@ namespace HyperVector.Core
 			return leftVector.GetCosineMetric(rightVector);
 		}
 
+		public DataVector<T> MultiplyInPlace(DataVector<T> rightVector)
+		{
+			if (_vectorSize != rightVector._vectorSize)
+			{
+				throw new ArgumentException
+					("The vector sizes for left and right operands should match");
+			}
+
+			for (int i = 0; i < _vectorSize; i++)
+				_presentation[i] *= rightVector[i];
+			return this;
+		}
+
 		public DataVector<T> Multiply(DataVector<T> rightVector)
 		{
 			if (_vectorSize != rightVector._vectorSize)
@@ -102,6 +121,38 @@ namespace HyperVector.Core
 			(DataVector<T> leftVector, DataVector<T> rightVector)
 		{
 			return leftVector.Multiply(rightVector);
+		}
+
+		public DataVector<T> AggregateInPlace
+			(IEnumerable<DataVector<T>> dataVectors)
+		{
+			if (!dataVectors.Any())
+			{
+				throw new ArgumentException
+					("The aggregation for empty collection is not allowed");
+			}
+
+			int vectorCounter = 0;
+			for (int i = 0; i < _vectorSize; i++)
+				_presentation[i] = T.Zero;
+
+			foreach (var dataVector in dataVectors)
+			{
+				if (_vectorSize != dataVector.Size)
+				{
+					throw new ArgumentException
+						("The input vector sizes should match the current vector");
+				}
+
+				for (int i = 0; i < _vectorSize; i++)
+					_presentation[i] += dataVector[i];
+				vectorCounter++;
+			}
+
+			T normalizer = T.One / T.CreateChecked(vectorCounter);
+			for (int i = 0; i < _vectorSize; i++)
+				_presentation[i] *= normalizer;
+			return this;
 		}
 
 		public static DataVector<T> Aggregate
@@ -138,6 +189,46 @@ namespace HyperVector.Core
 			for (int i = 0; i < vectorSize; i++)
 				aggregateVector._presentation[i] *= normalizer;
 			return aggregateVector;
+		}
+
+		public DataVector<T> RotateLeftInPlace()
+		{
+			T firstElement = _presentation[0];
+			for (int i = 1; i < _vectorSize; i++)
+				_presentation[i - 1] = _presentation[i];
+
+			_presentation[_vectorSize - 1] = firstElement;
+			return this;
+		}
+
+		public DataVector<T> RotateLeft()
+		{
+			var rotatedVector = new DataVector<T>(_vectorSize);
+			for (int i = 1; i < _vectorSize; i++)
+				rotatedVector._presentation[i - 1] = _presentation[i];
+
+			rotatedVector._presentation[_vectorSize - 1] = _presentation[0];
+			return rotatedVector;
+		}
+
+		public DataVector<T> RotateRightInPlace()
+		{
+			T lastElement = _presentation[_vectorSize - 1];
+			for (int i = _vectorSize - 1; i > 0; i--)
+				_presentation[i] = _presentation[i - 1];
+
+			_presentation[0] = lastElement;
+			return this;
+		}
+
+		public DataVector<T> RotateRight()
+		{
+			var rotatedVector = new DataVector<T>(_vectorSize);
+			for (int i = _vectorSize - 1; i > 0; i--)
+				rotatedVector._presentation[i] = _presentation[i - 1];
+
+			rotatedVector._presentation[0] = _presentation[_vectorSize - 1];
+			return rotatedVector;
 		}
 	}
 }
