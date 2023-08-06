@@ -1,7 +1,5 @@
 using System.Security.Cryptography;
 
-using Xunit.Abstractions;
-
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Loggers;

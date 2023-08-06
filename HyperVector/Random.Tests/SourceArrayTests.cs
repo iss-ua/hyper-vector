@@ -1,5 +1,3 @@
-using Xunit.Abstractions;
-
 namespace HyperVector.Random.Tests
 {
 	public class SourceArrayTests
