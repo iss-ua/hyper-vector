@@ -9,7 +9,8 @@ namespace HyperVector.Core
 	using half = System.Half;
 #pragma warning restore
 
-	public interface ITypeResolver<T> where T : IFloatingPoint<T>
+	public interface ITypeResolver<T>
+		where T : IFloatingPoint<T>, IFloatingPointIeee754<T>
 	{
 		DataVector<T> GenerateBaseVector(int vectorSize, T zeroDelta);
 	}

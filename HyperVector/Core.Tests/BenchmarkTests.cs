@@ -43,7 +43,7 @@ namespace HyperVector.Core.Tests
 			if (_outputHelper != null)
 			{
 				_outputHelper.WriteLine
-					($"Generated half base vector of size {halfVector.VectorSize}");
+					($"Generated half base vector of size {halfVector.Size}");
 			}
 		}
 
@@ -55,7 +55,7 @@ namespace HyperVector.Core.Tests
 			if (_outputHelper != null)
 			{
 				_outputHelper.WriteLine
-					($"Generated float base vector of size {floatVector.VectorSize}");
+					($"Generated float base vector of size {floatVector.Size}");
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace HyperVector.Core.Tests
 			if (_outputHelper != null)
 			{
 				_outputHelper.WriteLine
-					($"Generated double base vector of size {doubleVector.VectorSize}");
+					($"Generated double base vector of size {doubleVector.Size}");
 			}
 		}
 	}
